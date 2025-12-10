@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using GitLabApiClient.Internal.Http;
 using GitLabApiClient.Internal.Http.Serialization;
@@ -58,7 +59,7 @@ namespace GitLabApiClient.Test
         public class Integration
         {
             [Fact]
-            public async void CanLogin()
+            public async Task CanLogin()
             {
                 var sut = new GitLabClient(GitLabContainerFixture.GitlabHost);
                 var accessTokenResponse = await sut.LoginAsync(GitLabApiHelper.TestUserName, GitLabApiHelper.TestUserPassword);

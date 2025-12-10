@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using GitLabApiClient.Internal.Http;
@@ -15,7 +16,7 @@ namespace GitLabApiClient.Test
     public class CommitsClientMockedTest
     {
         [Fact]
-        public async void GetCommitBySha()
+        public async Task GetCommitBySha()
         {
             string gitlabServer = "http://fake-gitlab.com/";
             string projectId = "id";
@@ -37,7 +38,7 @@ namespace GitLabApiClient.Test
         }
 
         [Fact]
-        public async void GetCommitsByRefName()
+        public async Task GetCommitsByRefName()
         {
             string gitlabServer = "http://fake-gitlab.com/";
             string projectId = "id";
@@ -61,7 +62,7 @@ namespace GitLabApiClient.Test
         }
 
         [Fact]
-        public async void GetDiffsForCommit()
+        public async Task GetDiffsForCommit()
         {
             string gitlabServer = "http://fake-gitlab.com/";
             string projectId = "id";
@@ -100,7 +101,7 @@ namespace GitLabApiClient.Test
         }
 
         [Fact]
-        public async void GetStatusesForCommit()
+        public async Task GetStatusesForCommit()
         {
             string gitlabServer = "http://fake-gitlab.com/";
             string projectId = "id";
