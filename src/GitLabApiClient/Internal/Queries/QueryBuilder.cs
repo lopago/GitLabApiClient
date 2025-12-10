@@ -83,9 +83,11 @@ namespace GitLabApiClient.Internal.Queries
             switch (scope)
             {
                 case Scope.CreatedByMe:
-                    return "created-by-me";
+                    return "created_by_me";
                 case Scope.AssignedToMe:
-                    return "assigned-to-me";
+                    return "assigned_to_me";
+                case Scope.ReviewsForMe:
+                    return "reviews_for_me";
                 case Scope.All:
                     return "all";
                 default:
