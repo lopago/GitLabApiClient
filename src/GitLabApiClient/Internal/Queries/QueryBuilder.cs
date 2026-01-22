@@ -28,7 +28,9 @@ namespace GitLabApiClient.Internal.Queries
             public void Add(string name, IList<string> values)
             {
                 if (!values.Any())
+                {
                     return;
+                }
 
                 Add(name, string.Join(",", values));
             }
@@ -36,18 +38,22 @@ namespace GitLabApiClient.Internal.Queries
             public void Add(string name, IList<int> values)
             {
                 foreach (int val in values)
+                {
                     Add($"{name}[]", val.ToString());
+                }
             }
 
             public void Add(IList<int> values)
             {
                 foreach (int iid in values)
+                {
                     Add("iids[]", iid.ToString());
+                }
             }
 
             public string ToQueryString()
             {
-                var array = _nameValues.AllKeys.SelectMany(
+                string[] array = _nameValues.AllKeys.SelectMany(
                         key => _nameValues.GetValues(key)
                             ?.Select(value => $"{key.UrlEncode()}={value.UrlEncode()}")
                     )
@@ -82,6 +88,8 @@ namespace GitLabApiClient.Internal.Queries
         {
             switch (scope)
             {
+                case Scope.ReviewsForMe:
+                    return "reviews_for_me";
                 case Scope.CreatedByMe:
                     return "created-by-me";
                 case Scope.AssignedToMe:

@@ -4,6 +4,7 @@ namespace GitLabApiClient.Models
     {
         All,
         CreatedByMe,
-        AssignedToMe
+        AssignedToMe,
+        ReviewsForMe
     }
 }
