@@ -20,7 +20,7 @@ namespace GitLabApiClient.Test
         {
             var runners = await _sut.GetAsync();
 
-            runners.Count.Should().BeGreaterOrEqualTo(1);
+            runners.Count.Should().BeGreaterThanOrEqualTo(1);
             runners.Should().Contain(r => r.Description == TestProjectRunnerName);
         }
 
@@ -29,7 +29,7 @@ namespace GitLabApiClient.Test
         {
             var runners = await _sut.GetAllAsync();
 
-            runners.Count.Should().BeGreaterOrEqualTo(3);
+            runners.Count.Should().BeGreaterThanOrEqualTo(3);
             runners.Should().Contain(r => r.Description == TestRunnerName)
                 .And.Contain(r => r.Description == TestProjectRunnerName)
                 .And.Contain(r => r.Description == TestGroupRunnerName);
@@ -39,7 +39,7 @@ namespace GitLabApiClient.Test
         public async Task RunnersCanBeRetrievedById()
         {
             var runners = await _sut.GetAsync();
-            runners.Count.Should().BeGreaterOrEqualTo(1);
+            runners.Count.Should().BeGreaterThanOrEqualTo(1);
             runners[0].Should().NotBeNull();
             var runner = await _sut.GetAsync(runners[0].Id);
 
@@ -126,7 +126,7 @@ namespace GitLabApiClient.Test
             }
             catch (GitLabException e)
             {
-                e.HttpStatusCode.Should().Be(404);
+                e.HttpStatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
             }
         }
 
@@ -151,7 +151,7 @@ namespace GitLabApiClient.Test
             }
             catch (GitLabException e)
             {
-                e.HttpStatusCode.Should().Be(404);
+                e.HttpStatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
             }
         }
 

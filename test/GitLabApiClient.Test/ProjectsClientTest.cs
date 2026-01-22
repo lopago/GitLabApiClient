@@ -125,7 +125,7 @@ namespace GitLabApiClient.Test
             var runners = await _sut.GetRunnersAsync(GitLabApiHelper.TestProjectId);
 
             //assert
-            runners.Count.Should().BeGreaterOrEqualTo(1);
+            runners.Count.Should().BeGreaterThanOrEqualTo(1);
             runners.Should().Contain(r => r.Description == GitLabApiHelper.TestProjectRunnerName && r.Active == true);
         }
 
@@ -386,7 +386,7 @@ namespace GitLabApiClient.Test
 
             status.Status.Should().Be(ExportStatusEnum.Finished);
 
-            var path = System.IO.Path.GetTempFileName();
+            string path = System.IO.Path.GetTempFileName();
             await _sut.ExportDownloadAsync(GitLabApiHelper.TestProjectId, path);
 
             System.IO.File.Exists(path).Should().BeTrue();

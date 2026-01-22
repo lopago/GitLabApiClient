@@ -67,7 +67,7 @@ namespace GitLabApiClient.Test.Utilities
             string command = $"/opt/gitlab/bin/gitlab-rails r {InitRb}";
             var output = ExecuteCommandAgainstDockerWithOutput(_gitlabContainer, command);
 
-            output.Count().Should().BeGreaterOrEqualTo(2);
+            output.Count().Should().BeGreaterThanOrEqualTo(2);
 
             string token = output.FirstOrDefault();
             token.Should().NotBeNullOrEmpty();
