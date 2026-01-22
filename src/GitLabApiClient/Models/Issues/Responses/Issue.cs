@@ -31,6 +31,9 @@ namespace GitLabApiClient.Models.Issues.Responses
         [JsonProperty("labels")]
         public List<string> Labels { get; } = new List<string>();
 
+        [JsonProperty("merge_requests_count")]
+        public int? MergeRequestsCount { get; set; }
+
         [JsonProperty("milestone")]
         public Milestone Milestone { get; set; }
 
