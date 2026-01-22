@@ -1,4 +1,4 @@
-mode: ContinuousDeployment
+workflow: 'GitHubFlow/v1'
 branches:
-  master:
-    tag: beta
+  main:
+    label: 'beta'
