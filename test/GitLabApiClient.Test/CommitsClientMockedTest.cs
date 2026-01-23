@@ -1,8 +1,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using System.Threading.Tasks;
 using FakeItEasy;
-using FluentAssertions;
 using GitLabApiClient.Internal.Http;
 using GitLabApiClient.Internal.Http.Serialization;
 using GitLabApiClient.Internal.Queries;
@@ -15,7 +15,7 @@ namespace GitLabApiClient.Test
     public class CommitsClientMockedTest
     {
         [Fact]
-        public async void GetCommitBySha()
+        public async Task GetCommitBySha()
         {
             string gitlabServer = "http://fake-gitlab.com/";
             string projectId = "id";
@@ -32,12 +32,12 @@ namespace GitLabApiClient.Test
                 var commitsClient = new CommitsClient(gitlabHttpFacade, new CommitQueryBuilder(), new CommitRefsQueryBuilder(), new CommitStatusesQueryBuilder());
 
                 var commitFromClient = await commitsClient.GetAsync(projectId, sha);
-                commitFromClient.Id.Should().BeEquivalentTo(sha);
+                Assert.Equivalent(sha, commitFromClient.Id);
             }
         }
 
         [Fact]
-        public async void GetCommitsByRefName()
+        public async Task GetCommitsByRefName()
         {
             string gitlabServer = "http://fake-gitlab.com/";
             string projectId = "id";
@@ -54,14 +54,15 @@ namespace GitLabApiClient.Test
                 var commitsClient = new CommitsClient(gitlabHttpFacade, new CommitQueryBuilder(), new CommitRefsQueryBuilder(), new CommitStatusesQueryBuilder());
 
                 var commitsFromClient = await commitsClient.GetAsync(projectId, o => o.RefName = refName);
-                commitsFromClient[0].Id.Should().BeEquivalentTo("id1");
-                commitsFromClient[1].Id.Should().BeEquivalentTo("id2");
+                Assert.Equivalent("id1", commitsFromClient[0].Id);
+                Assert.Equivalent("id2", commitsFromClient[1].Id);
+
             }
 
         }
 
         [Fact]
-        public async void GetDiffsForCommit()
+        public async Task GetDiffsForCommit()
         {
             string gitlabServer = "http://fake-gitlab.com/";
             string projectId = "id";
@@ -78,29 +79,29 @@ namespace GitLabApiClient.Test
                 var commitsClient = new CommitsClient(gitlabHttpFacade, new CommitQueryBuilder(), new CommitRefsQueryBuilder(), new CommitStatusesQueryBuilder());
 
                 var diffsFromClient = await commitsClient.GetDiffsAsync(projectId, sha);
-                diffsFromClient[0].DiffText.Should().BeEquivalentTo("diff1");
-                diffsFromClient[0].NewPath.Should().BeEquivalentTo("new_path1");
-                diffsFromClient[0].OldPath.Should().BeEquivalentTo("old_path1");
-                diffsFromClient[0].AMode.Should().BeEquivalentTo("a_mode1");
-                diffsFromClient[0].BMode.Should().BeEquivalentTo("b_mode1");
-                diffsFromClient[0].IsNewFile.Should().BeTrue();
-                diffsFromClient[0].IsRenamedFile.Should().BeFalse();
-                diffsFromClient[0].IsDeletedFile.Should().BeFalse();
+                Assert.Equivalent("diff1", diffsFromClient[0].DiffText);
+                Assert.Equivalent("new_path1", diffsFromClient[0].NewPath);
+                Assert.Equivalent("old_path1", diffsFromClient[0].OldPath);
+                Assert.Equivalent("a_mode1", diffsFromClient[0].AMode);
+                Assert.Equivalent("b_mode1", diffsFromClient[0].BMode);
+                Assert.True(diffsFromClient[0].IsNewFile);
+                Assert.False(diffsFromClient[0].IsRenamedFile);
+                Assert.False(diffsFromClient[0].IsDeletedFile);
 
-                diffsFromClient[1].DiffText.Should().BeEquivalentTo("diff2");
-                diffsFromClient[1].NewPath.Should().BeEquivalentTo("new_path2");
-                diffsFromClient[1].OldPath.Should().BeEquivalentTo("old_path2");
-                diffsFromClient[1].AMode.Should().BeEquivalentTo("a_mode2");
-                diffsFromClient[1].BMode.Should().BeEquivalentTo("b_mode2");
-                diffsFromClient[1].IsNewFile.Should().BeFalse();
-                diffsFromClient[1].IsRenamedFile.Should().BeTrue();
-                diffsFromClient[1].IsDeletedFile.Should().BeTrue();
+                Assert.Equivalent("diff2", diffsFromClient[1].DiffText);
+                Assert.Equivalent("new_path2", diffsFromClient[1].NewPath);
+                Assert.Equivalent("old_path2", diffsFromClient[1].OldPath);
+                Assert.Equivalent("a_mode2", diffsFromClient[1].AMode);
+                Assert.Equivalent("b_mode2", diffsFromClient[1].BMode);
+                Assert.False(diffsFromClient[1].IsNewFile);
+                Assert.True(diffsFromClient[1].IsRenamedFile);
+                Assert.True(diffsFromClient[1].IsDeletedFile);
 
             }
         }
 
         [Fact]
-        public async void GetStatusesForCommit()
+        public async Task GetStatusesForCommit()
         {
             string gitlabServer = "http://fake-gitlab.com/";
             string projectId = "id";
@@ -118,15 +119,15 @@ namespace GitLabApiClient.Test
                 var commitsClient = new CommitsClient(gitlabHttpFacade, new CommitQueryBuilder(), new CommitRefsQueryBuilder(), new CommitStatusesQueryBuilder());
 
                 var statusesFromClient = await commitsClient.GetStatusesAsync(projectId, sha, o => o.Name = Name);
-                statusesFromClient[0].Status.Should().BeEquivalentTo("success");
-                statusesFromClient[0].Name.Should().BeEquivalentTo("name1");
-                statusesFromClient[0].TargetUrl.Should().BeEquivalentTo("target_url1");
-                statusesFromClient[0].Id.Should().BeEquivalentTo("1");
+                Assert.Equivalent("success", statusesFromClient[0].Status);
+                Assert.Equivalent("name1", statusesFromClient[0].Name);
+                Assert.Equivalent("target_url1", statusesFromClient[0].TargetUrl);
+                Assert.Equivalent("1", statusesFromClient[0].Id);
 
-                statusesFromClient[1].Status.Should().BeEquivalentTo("success");
-                statusesFromClient[1].Name.Should().BeEquivalentTo("name2");
-                statusesFromClient[1].TargetUrl.Should().BeEquivalentTo("target_url2");
-                statusesFromClient[1].Id.Should().BeEquivalentTo("2");
+                Assert.Equivalent("success", statusesFromClient[1].Status);
+                Assert.Equivalent("name2", statusesFromClient[1].Name);
+                Assert.Equivalent("target_url2", statusesFromClient[1].TargetUrl);
+                Assert.Equivalent("2", statusesFromClient[1].Id);
 
             }
         }

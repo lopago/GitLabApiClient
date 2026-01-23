@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using GitLabApiClient.Internal.Queries;
 using GitLabApiClient.Models;
 using GitLabApiClient.Models.Groups.Requests;
@@ -35,12 +34,12 @@ namespace GitLabApiClient.Test
         public async Task GroupCanBeRetrievedByGroupId()
         {
             var group = await _sut.GetAsync(TestGroupName);
-            group.FullName.Should().Be(TestGroupName);
-            group.FullPath.Should().Be(TestGroupName);
-            group.Name.Should().Be(TestGroupName);
-            group.Path.Should().Be(TestGroupName);
-            group.Visibility.Should().Be(GroupsVisibility.Public);
-            group.Description.Should().BeEmpty();
+            Assert.Equal(TestGroupName, group.FullName);
+            Assert.Equal(TestGroupName, group.FullPath);
+            Assert.Equal(TestGroupName, group.Name);
+            Assert.Equal(TestGroupName, group.Path);
+            Assert.Equal(GroupsVisibility.Public, group.Visibility);
+            Assert.Empty(group.Description);
         }
 
         // [Fact]
@@ -354,13 +353,19 @@ namespace GitLabApiClient.Test
         private async Task CleanupGroups()
         {
             foreach (int milestoneId in MilestoneIdsToClean)
+            {
                 await _sut.DeleteMilestoneAsync(TestGroupId, milestoneId);
+            }
 
             foreach (int groupId in _groupIdsToClean)
+            {
                 await _sut.DeleteAsync(groupId.ToString());
+            }
 
             foreach (string variableId in VariableIdsToClean)
+            {
                 await _sut.DeleteVariableAsync(GitLabApiHelper.TestGroupId, variableId);
+            }
         }
 
         private static string GetRandomGroupName()

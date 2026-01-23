@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using FluentAssertions;
 using GitLabApiClient.Internal.Queries;
 using GitLabApiClient.Models.Commits.Requests.CreateCommitRequest;
 using Xunit;
@@ -34,7 +33,8 @@ namespace GitLabApiClient.Test
             var createCommitRequest = new CreateCommitRequest("master", "create", actions);
 
             var commit = await _sut.CreateAsync(TestProjectId, createCommitRequest, autoEncodeToBase64);
-            commit.Id.Should().NotBeNullOrEmpty();
+            Assert.NotNull(commit.Id);
+            Assert.NotEmpty(commit.Id);
 
             //Update
             actions = new List<CreateCommitRequestAction>
@@ -47,7 +47,8 @@ namespace GitLabApiClient.Test
             createCommitRequest = new CreateCommitRequest("master", "update", actions);
 
             commit = await _sut.CreateAsync(TestProjectId, createCommitRequest, autoEncodeToBase64);
-            commit.Id.Should().NotBeNullOrEmpty();
+            Assert.NotNull(commit.Id);
+            Assert.NotEmpty(commit.Id);
 
             //Move
             actions = new List<CreateCommitRequestAction>
@@ -60,10 +61,11 @@ namespace GitLabApiClient.Test
             createCommitRequest = new CreateCommitRequest("master", "move", actions);
 
             commit = await _sut.CreateAsync(TestProjectId, createCommitRequest, autoEncodeToBase64);
-            commit.Id.Should().NotBeNullOrEmpty();
-            commit.AuthorEmail.Should().Be(TestUserEmail);
-            commit.AuthorName.Should().Be(TestName);
-            commit.CommitStats.Should().NotBeNull();
+            Assert.NotNull(commit.Id);
+            Assert.NotEmpty(commit.Id);
+            Assert.Equal(TestUserEmail, commit.AuthorEmail);
+            Assert.Equal(TestName, commit.AuthorName);
+            Assert.NotNull(commit.CommitStats);
 
             //Delete
             actions = new List<CreateCommitRequestAction>
