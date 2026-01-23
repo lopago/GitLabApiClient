@@ -73,6 +73,4 @@ jobs:
       # Push the package
       - name: NuGet push
         if: github.event_name == 'release' && github.event.action == 'published'
-        run: dotnet nuget push **/*.nupkg --api-key ${{steps.loginNugetOrg.outputs.NUGET_API_KEY}} --source $Env:SOURCE --skip-duplicate
-        env: 
-          SOURCE: https://api.nuget.org/v3/index.json
+        run: dotnet nuget push **/*.nupkg --api-key ${{steps.loginNugetOrg.outputs.NUGET_API_KEY}} --source 'https://api.nuget.org/v3/index.json' --skip-duplicate
