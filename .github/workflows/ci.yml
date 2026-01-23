@@ -41,12 +41,16 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: dotnet tool install -g GitVersion.Tool
-
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v4.2.0
+        with:
+          versionSpec: '6.4.x'
+      
       - name: GitVersion
-        run: dotnet gitversion /l console /output buildserver
+        id: version_step # step id used as a reference for output values
+        uses: gittools/actions/gitversion/execute@v4.2.0
 
-      - run: ./build.ps1
+      - run: dotnet build --restore -p:Version=${{ env.GitVersion_fullSemVer }}  -p:GeneratePackageOnBuild=true -c Release 
         shell: pwsh
 
       - run: dotnet test --verbosity normal --no-build --no-restore
