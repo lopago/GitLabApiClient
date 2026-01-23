@@ -51,7 +51,7 @@ jobs:
       - run: dotnet test --verbosity normal --no-build --no-restore
         shell: pwsh
 
-      - name: Push NuGet
+      - name: Push to GithubPackages
         if: |
           startsWith(github.event.ref, 'refs/tags/')
           || endsWith(github.event.ref, '/master')
@@ -60,3 +60,18 @@ jobs:
         run: dotnet nuget push **/*.nupkg --source $Env:SOURCE --skip-duplicate
         env:
           SOURCE: ${{ env.NUGET_SOURCE }}
+
+      # Get a short-lived NuGet API key
+      - name: NuGet login (OIDC → temp API key)
+        if: github.event_name == 'release' && github.event.action == 'published'
+        uses: NuGet/login@v1
+        id: loginNugetOrg
+        with:
+          user: ${{ secrets.NUGET_USER }}
+    
+      # Push the package
+      - name: NuGet push
+        if: github.event_name == 'release' && github.event.action == 'published'
+        run: dotnet nuget push **/*.nupkg --api-key ${{steps.loginNugetOrg.outputs.NUGET_API_KEY}} --source $Env:SOURCE --skip-duplicate
+        env: 
+          SOURCE: https://api.nuget.org/v3/index.json
