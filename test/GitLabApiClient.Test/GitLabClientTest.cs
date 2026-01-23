@@ -1,5 +1,4 @@
 using System;
-using FluentAssertions;
 using GitLabApiClient.Internal.Http;
 using GitLabApiClient.Internal.Http.Serialization;
 using GitLabApiClient.Models.Oauth.Requests;
@@ -19,12 +18,13 @@ namespace GitLabApiClient.Test
         public void GitLabClientCanBeConstructed(string hostUrl)
         {
             var sut = new GitLabClient(hostUrl);
-            sut.HostUrl.Should().Be("https://gitlab.com/api/v4/");
+            Assert.Equal("https://gitlab.com/api/v4/", sut.HostUrl);
         }
 
         [Fact]
         public void InvalidToken()
         {
+            Assert.
             Action action = () => new GitLabClient("https://gitlab.com/api/v4/", "HelloWorld");
             action.Should()
                 .Throw<ArgumentException>()
