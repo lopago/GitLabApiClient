@@ -50,11 +50,9 @@ jobs:
         id: version_step # step id used as a reference for output values
         uses: gittools/actions/gitversion/execute@v4.2.0
 
-      - run: dotnet build --restore -p:Version=${{ env.GitVersion_fullSemVer }}  -p:GeneratePackageOnBuild=true -c Release 
-        shell: pwsh
+      - run: dotnet build --restore -p:Version=${{ env.GitVersion_fullSemVer }} -p:PackageId="${{ github.repository_owner }}.GitLabApiClient" -p:PackageProjectUrl="${{ github.repositoryUrl }}" -p:GeneratePackageOnBuild=true -c Release 
 
       - run: dotnet test --verbosity normal --no-build --no-restore
-        shell: pwsh
 
       - name: Push to GithubPackages
         if: |
