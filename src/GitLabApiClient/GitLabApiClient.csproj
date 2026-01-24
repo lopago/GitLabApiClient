@@ -4,18 +4,19 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Copyright />
     <Description>GitLabApiClient is a .NET rest client for GitLab API v4.</Description>
-    <Authors>nmklotas</Authors>
-    <Version></Version>
-    <PackageProjectUrl>https://github.com/nmklotas/GitLabApiClient</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/nmklotas/GitLabApiClient</RepositoryUrl>
+    <Authors Condition="'$(Authors)'==''">nmklotas</Authors>
+    <Version Condition="'$(Version)'==''">1.9.0-beta.x</Version>
+    <PackageProjectUrl Condition="'$(PackageProjectUrl)'==''">https://github.com/nmklotas/GitLabApiClient</PackageProjectUrl>
+    <RepositoryUrl Condition="'$(RepositoryUrl)'==''">$(PackageProjectUrl)</RepositoryUrl>
     <PackageTags>GitLab REST API CI Client</PackageTags>
-    <PackageId>lopago.GitLabApiClient</PackageId>
+    <PackageId Condition="'$(PackageId)'==''">lopago.GitLabApiClient</PackageId>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Company></Company>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <UseFullSemVerForNuGet>true</UseFullSemVerForNuGet>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(GITHUB_ACTIONS)' == 'true'">
@@ -25,5 +26,12 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 </Project>
