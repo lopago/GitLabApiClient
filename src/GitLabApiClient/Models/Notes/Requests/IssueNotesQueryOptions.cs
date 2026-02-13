@@ -16,5 +16,10 @@ namespace GitLabApiClient.Models.Notes.Requests
         /// Return issue notes ordered by created_at or updated_at fields. Default is created_at
         /// </summary>
         public NoteOrder Order { get; set; } = NoteOrder.CreatedAt;
+
+        /// <summary>
+        /// Filter notes by activity type. Valid values: all_notes, only_comments, only_activity. Default is all_notes
+        /// </summary>
+        public NoteActivityFilter ActivityFilter { get; set; } = NoteActivityFilter.AllNotes;
     }
 }
