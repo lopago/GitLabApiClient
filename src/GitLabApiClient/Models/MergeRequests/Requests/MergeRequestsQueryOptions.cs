@@ -66,5 +66,30 @@ namespace GitLabApiClient.Models.MergeRequests.Requests
         /// Returns merge requests assigned to the given user id.
         /// </summary>
         public int? AssigneeId { get; set; }
+
+        /// <summary>
+        /// Return issues updated after the given time (inclusive).
+        /// </summary>
+        public DateTime? UpdatedAfter { get; set; }
+
+        /// <summary>
+        /// Return issues updated before the given time (inclusive).
+        /// </summary>
+        public DateTime? DeployedBefore { get; set; }
+
+        /// <summary>
+        /// Return issues deployed after the given time (inclusive).
+        /// </summary>
+        public DateTime? DeployedAfter { get; set; }
+
+        /// <summary>
+        /// Return issues deployed before the given time (inclusive).
+        /// </summary>
+        public DateTime? UpdatedBefore { get; set; }
+
+        /// <summary>
+        /// Filter merge requests against their wip status.
+        /// </summary>
+        public bool? Wip { get; set; }
     }
 }
