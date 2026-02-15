@@ -48,12 +48,11 @@ namespace GitLabApiClient.Test
             });
 
             //assert
-            updatedIssue.Should().Match<Issue>(i =>
-                i.ProjectId == TestProjectTextId &&
-                i.Confidential == false &&
-                i.Description == "Description11" &&
-                i.Labels.SequenceEqual(new[] { "Label11" }) &&
-                i.Title == "Title11");
+            Assert.Equal(TestProjectTextId, updatedIssue.ProjectId);
+            Assert.False(updatedIssue.Confidential);
+            Assert.Equal("Description11", updatedIssue.Description);
+            Assert.Equal(new[] { "Label11" }, updatedIssue.Labels);
+            Assert.Equal("Title11", updatedIssue.Title);
         }
 
         [Fact]
@@ -69,7 +68,7 @@ namespace GitLabApiClient.Test
             });
 
             //assert
-            updatedIssue.Should().Match<Issue>(i => i.State == IssueState.Closed);
+            Assert.Equal(IssueState.Closed, updatedIssue.State);
         }
 
         [Fact]
@@ -83,10 +82,10 @@ namespace GitLabApiClient.Test
             var listedIssues = await _sut.GetAllAsync(projectId: TestProjectTextId, options: o => o.Filter = title);
 
             //assert
-            listedIssues.Single().Should().Match<Issue>(i =>
-                i.ProjectId == TestProjectTextId &&
-                i.Title == title &&
-                i.TimeStats != null);
+            var i = listedIssues.Single();
+            Assert.Equal(TestProjectTextId, i.ProjectId);
+            Assert.Equal(title, i.Title);
+            Assert.NotNull(i.TimeStats);
         }
 
         [Fact]
@@ -109,14 +108,15 @@ namespace GitLabApiClient.Test
             var ownedIssue = (await _sut.GetAllAsync(options: o => o.Scope = Scope.CreatedByMe)).FirstOrDefault(i => i.Title == title);
 
             //assert
-            issue.Should().Match<Issue>(i =>
-                i.ProjectId == TestProjectTextId &&
-                i.Confidential && i.Title == title && i.Description == "Description" &&
-                i.Labels.SequenceEqual(new[] { "Label1" }));
+            Assert.Equal(TestProjectTextId, issue.ProjectId);
+            Assert.True(issue.Confidential);
+            Assert.Equal(title, issue.Title);
+            Assert.Equal("Description", issue.Description);
+            Assert.Equal(new[] { "Label11" }, issue.Labels);
 
-            issueById.Should().BeEquivalentTo(issue, o => o.Excluding(s => s.UpdatedAt));
-            issueByProjectId.Should().BeEquivalentTo(issue, o => o.Excluding(s => s.UpdatedAt));
-            ownedIssue.Should().BeEquivalentTo(issue, o => o.Excluding(s => s.UpdatedAt));
+            Assert.EquivalentWithExclusions(issue, issueById, nameof(issue.UpdatedAt));
+            Assert.EquivalentWithExclusions(issue, issueByProjectId, nameof(issue.UpdatedAt));
+            Assert.EquivalentWithExclusions(issue, ownedIssue, nameof(issue.UpdatedAt));
         }
 
         [Fact]
@@ -139,11 +139,10 @@ namespace GitLabApiClient.Test
             var issueNote = await _sut.GetNoteAsync(TestProjectId, issue.Iid, note.Id);
 
             //assert
-            note.Should().Match<Note>(n =>
-                n.Body == body);
+            Assert.Equal(body, note.Body);
 
-            issueNotes.Should().BeEquivalentTo(note, o => o.Excluding(s => s.UpdatedAt));
-            issueNote.Should().BeEquivalentTo(note, o => o.Excluding(s => s.UpdatedAt));
+            Assert.EquivalentWithExclusions(note, issueNotes, nameof(issue.UpdatedAt));
+            Assert.EquivalentWithExclusions(note, issueNote, nameof(issue.UpdatedAt));
         }
 
         [Fact]
@@ -160,8 +159,7 @@ namespace GitLabApiClient.Test
             var updatedIssueNote = await _sut.UpdateNoteAsync(TestProjectTextId, createdIssue.Iid, createdIssueNote.Id, new UpdateIssueNoteRequest("comment22"));
 
             //assert
-            updatedIssueNote.Should().Match<Note>(n =>
-                n.Body == "comment22");
+            Assert.Equal("comment22",updatedIssueNote.Body);
         }
 
         [Fact]
@@ -182,13 +180,13 @@ namespace GitLabApiClient.Test
             var listedIssues = await _sut.GetAllAsync(projectId: TestProjectTextId, options: o => o.Filter = title);
 
             //assert
-            listedIssues.Single().Should().Match<Issue>(i =>
-                i.ProjectId == TestProjectTextId &&
-                i.Title == title &&
-                i.TaskCompletionStatus != null &&
-                i.TaskCompletionStatus.Count == 3 &&
-                i.TaskCompletionStatus.Completed == 1 &&
-                i.TimeStats != null);
+            var i = listedIssues.Single();
+            Assert.Equal(TestProjectTextId, i.ProjectId);
+            Assert.Equal(title, i.Title);
+            Assert.NotNull(i.TaskCompletionStatus);
+            Assert.Equal(3, i.TaskCompletionStatus.Count);
+            Assert.Equal(1, i.TaskCompletionStatus.Completed);
+            Assert.NotNull(i.TimeStats);
         }
     }
 }

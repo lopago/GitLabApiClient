@@ -35,14 +35,14 @@ namespace GitLabApiClient.Test
         public async Task ProjectRetrieved()
         {
             var project = await _sut.GetAsync(GitLabApiHelper.TestProjectId);
-            project.Id.Should().Be(GitLabApiHelper.TestProjectId);
+            Assert.Equal(GitLabApiHelper.TestProjectId, project.Id);
         }
 
         [Fact]
         public async Task ProjectUsersRetrieved()
         {
             var users = await _sut.GetUsersAsync(GitLabApiHelper.TestProjectId);
-            users.Should().NotBeEmpty();
+            Assert.NotEmpty(users);
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace GitLabApiClient.Test
             });
 
             var labels = await _sut.GetLabelsAsync(GitLabApiHelper.TestProjectId);
-            labels.Should().NotBeEmpty();
+            Assert.NotEmpty(labels);
             await _sut.DeleteLabelAsync(GitLabApiHelper.TestProjectId, createdLabel.Name);
         }
 
@@ -78,13 +78,12 @@ namespace GitLabApiClient.Test
             var milestone = await _sut.GetMilestoneAsync(GitLabApiHelper.TestProjectId, createdMilestone.Id);
 
             //assert
-            milestones.Should().NotBeEmpty();
-            milestone.Should().Match<Milestone>(m =>
-                m.ProjectId == GitLabApiHelper.TestProjectId &&
-                m.Title == "milestone6" &&
-                m.StartDate == "2018-11-01" &&
-                m.DueDate == "2018-11-30" &&
-                m.Description == "description6");
+            Assert.NotEmpty(milestones);
+            Assert.Equal(GitLabApiHelper.TestProjectId, milestone.ProjectId);
+            Assert.Equal("milestone6", milestone.Title);
+            Assert.Equal("2018-11-01", milestone.StartDate);
+            Assert.Equal("2018-11-30", milestone.DueDate);
+            Assert.Equal("description6", milestone.Description);
         }
 
         [Fact]
@@ -108,7 +107,7 @@ namespace GitLabApiClient.Test
             var variable = variables.First(v => v.Key == createdVariable.Key);
 
             //assert
-            variables.Should().NotBeEmpty();
+            Assert.NotEmpty(variables);
             variable.Should().Match<Variable>(v =>
                 v.VariableType == createdVariable.VariableType &&
                 v.Key == createdVariable.Key &&
@@ -125,8 +124,8 @@ namespace GitLabApiClient.Test
             var runners = await _sut.GetRunnersAsync(GitLabApiHelper.TestProjectId);
 
             //assert
-            runners.Count.Should().BeGreaterThanOrEqualTo(1);
-            runners.Should().Contain(r => r.Description == GitLabApiHelper.TestProjectRunnerName && r.Active == true);
+            Assert.NotEmpty(runners);
+            Assert.Contains(runners, r => r.Description == GitLabApiHelper.TestProjectRunnerName && r.Active == true);
         }
 
         [Fact]
@@ -134,7 +133,8 @@ namespace GitLabApiClient.Test
         {
             var projects = await _sut.GetAsync(
                 o => o.Filter = GitLabApiHelper.TestProjectName);
-            projects.Should().ContainSingle().Which.Id.Should().Be(GitLabApiHelper.TestProjectId);
+            Assert.Single(projects);
+            Assert.Equal(GitLabApiHelper.TestProjectId, projects[0].Id);
         }
 
 
@@ -156,17 +156,18 @@ namespace GitLabApiClient.Test
             createRequest.Visibility = ProjectVisibilityLevel.Internal;
 
             var project = await _sut.CreateAsync(createRequest);
-            project.Should().Match<Project>(
-                p => p.Description == "description1" &&
-                     p.ContainerRegistryEnabled &&
-                     p.IssuesEnabled &&
-                     p.JobsEnabled &&
-                     p.MergeRequestsEnabled &&
-                     p.PublicJobs &&
-                     p.WikiEnabled &&
-                     p.OnlyAllowMergeIfAllDiscussionsAreResolved == true &&
-                     p.OnlyAllowMergeIfPipelineSucceeds == true &&
-                     p.Visibility == ProjectVisibilityLevel.Internal);
+
+            Assert.NotNull(project);
+            Assert.Equal("description1", project.Description);
+            Assert.True(project.ContainerRegistryEnabled);
+            Assert.True(project.IssuesEnabled);
+            Assert.True(project.JobsEnabled);
+            Assert.True(project.MergeRequestsEnabled);
+            Assert.True(project.PublicJobs);
+            Assert.True(project.WikiEnabled);
+            Assert.True(project.OnlyAllowMergeIfAllDiscussionsAreResolved);
+            Assert.True(project.OnlyAllowMergeIfPipelineSucceeds);
+            Assert.Equal(ProjectVisibilityLevel.Internal, project.Visibility);
 
             ProjectIdsToClean.Add(project.Id);
         }
@@ -265,11 +266,10 @@ namespace GitLabApiClient.Test
             await _sut.DeleteLabelAsync(GitLabApiHelper.TestProjectId, updatedLabel.Name);
 
             //assert
-            updatedLabel.Should().Match<Label>(l =>
-                l.Name == "Label 11" &&
-                l.Color == "#000000" &&
-                l.Description == "description11" &&
-                l.Priority == 11);
+            Assert.Equal("Label 11", updatedLabel.Name);
+            Assert.Equal("#000000", updatedLabel.Color);
+            Assert.Equal("description11", updatedLabel.Description);
+            Assert.Equal(11, updatedLabel.Priority);
         }
 
         [Fact]
@@ -294,12 +294,11 @@ namespace GitLabApiClient.Test
             });
 
             //assert
-            updatedMilestone.Should().Match<Milestone>(m =>
-                m.ProjectId == GitLabApiHelper.TestProjectId &&
-                m.Title == "milestone23" &&
-                m.StartDate == "2018-11-05" &&
-                m.DueDate == "2018-11-10" &&
-                m.Description == "description23");
+            Assert.Equal(GitLabApiHelper.TestProjectId, updatedMilestone.ProjectId);
+            Assert.Equal("milestone23", updatedMilestone.Title);
+            Assert.Equal("2018-11-05", updatedMilestone.StartDate);
+            Assert.Equal("2018-11-10", updatedMilestone.DueDate);
+            Assert.Equal("description23", updatedMilestone.Description);
         }
 
         [Fact]
@@ -358,14 +357,14 @@ namespace GitLabApiClient.Test
             });
 
             //assert
-            updatedMilestone.Should().Match<Milestone>(i => i.State == MilestoneState.Closed);
+            Assert.Equal(MilestoneState.Closed, updatedMilestone.State);
         }
 
         [Fact]
         public async Task ExportImportProject()
         {
             var status = await _sut.GetExportStatusAsync(GitLabApiHelper.TestProjectId);
-            status.Status.Should().Be(ExportStatusEnum.None);
+            Assert.Equal(ExportStatusEnum.None, status.Status);
 
             await _sut.ExportAsync(GitLabApiHelper.TestProjectId);
 
@@ -373,7 +372,7 @@ namespace GitLabApiClient.Test
             stopwatch.Start();
             while (status.Status == ExportStatusEnum.None)
             {
-                stopwatch.Elapsed.TotalMilliseconds.Should().BeLessThan(new TimeSpan(0, 1, 0).TotalMilliseconds);
+                Assert.True(stopwatch.Elapsed.TotalMilliseconds < new TimeSpan(0, 1, 0).TotalMilliseconds);
 
                 await Task.Delay(5000);
                 status = await _sut.GetExportStatusAsync(GitLabApiHelper.TestProjectId);
@@ -384,22 +383,21 @@ namespace GitLabApiClient.Test
                 status = await _sut.GetExportStatusAsync(GitLabApiHelper.TestProjectId);
             }
 
-            status.Status.Should().Be(ExportStatusEnum.Finished);
+            Assert.Equal(ExportStatusEnum.Finished,status.Status);
 
             string path = System.IO.Path.GetTempFileName();
             await _sut.ExportDownloadAsync(GitLabApiHelper.TestProjectId, path);
 
-            System.IO.File.Exists(path).Should().BeTrue();
+            Assert.True(System.IO.File.Exists(path));
             var projectFileInfo = new System.IO.FileInfo(path);
-            projectFileInfo.Length.Should().BeGreaterThan(0);
+            Assert.True(projectFileInfo.Length > 0);
 
             var req = ImportProjectRequest.FromFile("project_import_test", path);
             var importProject = await _sut.ImportAsync(req);
-            importProject.Path.Should().Be("project_import_test");
+            Assert.Equal("project_import_test", importProject.Path);
 
             var importStatus = await _sut.GetImportStatusAsync(importProject.Id);
-            importStatus.Status.Should().NotBe(ImportStatusEnum.None);
-
+            Assert.NotEqual(ImportStatusEnum.None, importStatus.Status);
             System.IO.File.Delete(path);
         }
 

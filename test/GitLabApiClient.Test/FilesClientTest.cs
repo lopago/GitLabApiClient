@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Xunit;
 using static GitLabApiClient.Test.Utilities.GitLabApiHelper;
 
@@ -15,18 +14,18 @@ namespace GitLabApiClient.Test
         public async Task GetFile()
         {
             var file = await _sut.GetAsync(TestProjectId, "README.md");
-            file.Content.Should().NotBeNull();
-            file.Encoding.Should().Be("base64");
-            file.Reference.Should().Be("master");
-            file.Filename.Should().Be("README.md");
-            file.FullPath.Should().Be("README.md");
-            file.Content.Should().Be("IyBUZXN0IHByb2plY3QKCkhlbGxvIHdvcmxkCg==");
-            file.Size.Should().Be(28);
-            file.ContentSha256.Should().Be("b6cb63af62daa14162368903ca4e42350cb1d855446febbdb22fb5c24f9aeedb");
-            file.BlobId.Should().HaveLength(40);
-            file.CommitId.Should().HaveLength(40);
-            file.LastCommitId.Should().HaveLength(40);
-            file.ContentDecoded.Should().Be("# Test project\n\nHello world\n");
+            Assert.NotNull(file);
+            Assert.Equal("base64", file.Encoding);
+            Assert.Equal("master", file.Reference);
+            Assert.Equal("README.md", file.Filename);
+            Assert.Equal("README.md", file.FullPath);
+            Assert.Equal("IyBUZXN0IHByb2plY3QKCkhlbGxvIHdvcmxkCg==", file.Content);
+            Assert.Equal(28,file.Size);
+            Assert.Equal("b6cb63af62daa14162368903ca4e42350cb1d855446febbdb22fb5c24f9aeedb", file.ContentSha256);
+            Assert.Equal(40, file.BlobId.Length);
+            Assert.Equal(40, file.CommitId.Length);
+            Assert.Equal(40, file.LastCommitId.Length);
+            Assert.Equal("# Test project\n\nHello world\n", file.ContentDecoded);
         }
     }
 }

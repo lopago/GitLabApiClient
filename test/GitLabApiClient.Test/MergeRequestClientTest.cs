@@ -3,7 +3,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
-using FluentAssertions;
 using GitLabApiClient.Internal.Queries;
 using GitLabApiClient.Models.MergeRequests.Requests;
 using GitLabApiClient.Models.MergeRequests.Responses;
@@ -98,9 +97,9 @@ namespace GitLabApiClient.Test
             Func<Task<MergeRequest>> acceptAction = () =>
                 _sut.AcceptAsync(GitLabApiHelper.TestProjectTextId, createdMergeRequest.Iid, new AcceptMergeRequest());
 
-            await acceptAction.Should().ThrowAsync<GitLabException>().
-                WithMessage("{\"message\":\"405 Method Not Allowed\"}").
-                Where(e => e.HttpStatusCode == HttpStatusCode.MethodNotAllowed);
+            var exception = await Assert.ThrowsAsync<GitLabException>(acceptAction);
+            Assert.Equal("{\"message\":\"405 Method Not Allowed\"}", exception.Message);
+            Assert.Equal(HttpStatusCode.MethodNotAllowed, exception.HttpStatusCode);
         }
 
         [Fact]
@@ -112,15 +111,14 @@ namespace GitLabApiClient.Test
             {
                 State = RequestedMergeRequestState.Close
             });
-
-            updatedMergeRequest.State.Should().Be(MergeRequestState.Closed);
+            Assert.Equal(MergeRequestState.Closed, updatedMergeRequest.State);
         }
 
-        public Task InitializeAsync() => DeleteAllMergeRequests();
+        public ValueTask InitializeAsync() => DeleteAllMergeRequests();
 
-        public Task DisposeAsync() => DeleteAllMergeRequests();
+        public ValueTask DisposeAsync() => DeleteAllMergeRequests();
 
-        private async Task DeleteAllMergeRequests()
+        private async ValueTask DeleteAllMergeRequests()
         {
             var mergeRequests = await _sut.GetAsync(GitLabApiHelper.TestProjectId);
             await Task.WhenAll(mergeRequests.Select(

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace GitLabApiClient.Test.Utilities
         private IContainerService _gitlabContainer;
         private readonly string _gitlabDockerImage = "gitlab/gitlab-ce:12.10.14-ce.0";
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             await StartContainer();
             Token = InitializeData();
@@ -31,7 +32,7 @@ namespace GitLabApiClient.Test.Utilities
             GitlabHost = $"http://{hostAndPort}/api/v4/";
         }
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             await StopContainer();
         }
@@ -67,13 +68,14 @@ namespace GitLabApiClient.Test.Utilities
             string command = $"/opt/gitlab/bin/gitlab-rails r {InitRb}";
             var output = ExecuteCommandAgainstDockerWithOutput(_gitlabContainer, command);
 
-            output.Count().Should().BeGreaterThanOrEqualTo(2);
-
+            Assert.True(output.Count() >= 2);
             string token = output.FirstOrDefault();
-            token.Should().NotBeNullOrEmpty();
-
+            Assert.NotNull(token);
+            Assert.NotEmpty(token);
+            
             RunnerRegistrationToken = output.ElementAt(1);
-            RunnerRegistrationToken.Should().NotBeNullOrEmpty();
+            Assert.NotNull(RunnerRegistrationToken);
+            Assert.NotEmpty(RunnerRegistrationToken);
 
             return token;
         }
@@ -82,9 +84,10 @@ namespace GitLabApiClient.Test.Utilities
         {
             var output = container.Execute(command);
             string error = output.Error;
-            error.Should().BeEmpty();
-            output.Success.Should().BeTrue();
-            output.Data.Should().NotBeNullOrEmpty();
+            Assert.Empty(error);
+            Assert.True(output.Success);
+            Assert.NotNull(output.Data);
+            Assert.NotEmpty(output.Data);
 
             return output.Data;
         }
